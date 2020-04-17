@@ -21,6 +21,8 @@ module.exports = {
   collectCoverageFrom: [
     '<rootDir>/packages/**/*.js',
     '!packages/**/*.d.ts',
+    '!packages/**/index.lib.js',
+    '!packages/**/index.js',
     '!**/node_modules/**',
   ],
   coverageThreshold: {

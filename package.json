@@ -12,7 +12,8 @@
   "license": "MIT",
   "sideEffects": false,
   "scripts": {
-    "test": "jest --watchAll",
+    "test": "jest --watchAll=false --coverage",
+    "test:watch": "jest --watch",
     "build": "rollup -c",
     "lint:check": "eslint --ext .js .",
     "lint": "npm run lint:check -- --fix",
