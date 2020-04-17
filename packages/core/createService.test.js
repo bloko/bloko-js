@@ -1,8 +1,24 @@
 import createService from './createService';
 import http from './http';
 
+jest.mock('./http', () => {
+  const http = jest.requireActual('./http');
+  let mockFn;
+
+  return {
+    ...http,
+    instance() {
+      if (!mockFn) {
+        mockFn = jest.fn();
+      }
+
+      return mockFn;
+    },
+  };
+});
+
 describe('createService', () => {
-  const repository = http.getInstance();
+  const repository = http.instance();
 
   beforeEach(() => {
     repository.mockReset();

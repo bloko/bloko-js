@@ -1,6 +1,6 @@
 import http from './http';
 
-const repository = http.getInstance();
+const instance = http.instance();
 
 function createService(config) {
   let params = getParams(config.endpoint);
@@ -11,12 +11,12 @@ function createService(config) {
     let dataKey =
       ['get', 'delete'].indexOf(config.method) > -1 ? 'params' : 'data';
 
-    params.forEach((param) => {
+    params.forEach(param => {
       _endpoint = _endpoint.replace(':' + param, _params[param]);
       delete _params[param];
     });
 
-    return repository({
+    return instance({
       method: config.method,
       endpoint: _endpoint,
       [dataKey]: _params,
@@ -25,7 +25,7 @@ function createService(config) {
 
   function getParams(endpoint) {
     try {
-      return endpoint.match(/:\w+/g).map((param) => {
+      return endpoint.match(/:\w+/g).map(param => {
         // remove : character
         return param.slice(1);
       });

@@ -1,6 +1,10 @@
 module.exports = {
   root: true,
 
+  globals: {
+    Promise: true,
+  },
+
   parser: 'babel-eslint',
 
   env: {
