@@ -1,6 +1,6 @@
 {
   "name": "blokojs",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "author": "Matheus Marques <marquesm91@gmail.com>",
   "main": "dist/core/index",
   "keywords": [
