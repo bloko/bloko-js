@@ -38,7 +38,7 @@ describe('createService', () => {
     expect(repository).toHaveBeenCalledTimes(1);
     expect(repository).toHaveBeenCalledWith({
       method: options.method,
-      endpoint: options.endpoint,
+      url: options.endpoint,
       params: payload,
     });
   });
@@ -58,7 +58,7 @@ describe('createService', () => {
     expect(repository).toHaveBeenCalledTimes(1);
     expect(repository).toHaveBeenCalledWith({
       method: options.method,
-      endpoint: options.endpoint.replace(':id', id),
+      url: options.endpoint.replace(':id', id),
       params: restPayload,
     });
   });
@@ -78,7 +78,7 @@ describe('createService', () => {
     expect(repository).toHaveBeenCalledTimes(1);
     expect(repository).toHaveBeenCalledWith({
       method: options.method,
-      endpoint: options.endpoint.replace(':id', id),
+      url: options.endpoint.replace(':id', id),
       data: restPayload,
     });
   });

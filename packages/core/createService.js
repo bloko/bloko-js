@@ -18,7 +18,7 @@ function createService(config) {
 
     return instance({
       method: config.method,
-      endpoint: _endpoint,
+      url: _endpoint,
       [dataKey]: _params,
     });
   }
