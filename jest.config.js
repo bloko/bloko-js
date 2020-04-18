@@ -1,7 +1,7 @@
 module.exports = {
   roots: ['<rootDir>/packages'],
   testEnvironment: 'jsdom',
-  setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
+  setupFilesAfterEnv: ['<rootDir>/test/setupTests.js'],
   globals: {
     __DEV__: true,
   },

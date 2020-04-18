@@ -1,10 +1,5 @@
-import http from './http';
-
-export const {
-  setBaseURL,
-  setAuthorization,
-  removeAuthorization,
-  addRequestInterceptor,
-  addResponseInterceptor,
-} = http;
-export { default as createService } from './createService';
+if (process.env.NODE_ENV === 'production') {
+  module.exports = require('./core/index.js');
+} else {
+  module.exports = require('./core/index.min.js');
+}

@@ -39,9 +39,9 @@ describe('http', () => {
     const error = error => Promise.reject(error);
     const getInterceptor = type => instance.interceptors[type].handlers[0];
 
-    http.addRequestInterceptor(success, error);
+    http.setRequestInterceptor(success, error);
 
-    http.addResponseInterceptor(success, error);
+    http.setResponseInterceptor(success, error);
 
     const requestInterceptor = getInterceptor('request');
     const responseInterceptor = getInterceptor('response');
@@ -73,13 +73,13 @@ describe('http', () => {
     const getInterceptorsLength = type =>
       instance.interceptors[type].handlers.length;
 
-    http.addRequestInterceptor(success, error);
-    http.addRequestInterceptor(success, error);
-    http.addRequestInterceptor(success, error);
+    http.setRequestInterceptor(success, error);
+    http.setRequestInterceptor(success, error);
+    http.setRequestInterceptor(success, error);
 
-    http.addResponseInterceptor(success, error);
-    http.addResponseInterceptor(success, error);
-    http.addResponseInterceptor(success, error);
+    http.setResponseInterceptor(success, error);
+    http.setResponseInterceptor(success, error);
+    http.setResponseInterceptor(success, error);
 
     expect(getInterceptorsLength('request')).toEqual(1);
     expect(getInterceptorsLength('response')).toEqual(1);

@@ -4,6 +4,10 @@ const http = (function () {
   let __instance;
   let __requestInterceptor;
   let __responseInterceptor;
+  let INTERCEPTOR_TYPE = {
+    REQUEST: 'request',
+    RESPONSE: 'response',
+  };
 
   function instance() {
     if (!__instance) {
@@ -29,22 +33,35 @@ const http = (function () {
     delete instance().defaults.headers.common['Authorization'];
   }
 
-  function addRequestInterceptor(success, error) {
-    __removeInterceptor('request', __requestInterceptor);
-    __requestInterceptor = __addInterceptor('request', success, error);
+  function setRequestInterceptor(success, error) {
+    __requestInterceptor = __setInterceptor(
+      INTERCEPTOR_TYPE.REQUEST,
+      success,
+      error
+    );
   }
 
-  function addResponseInterceptor(success, error) {
-    __removeInterceptor('response', __responseInterceptor);
-    __responseInterceptor = __addInterceptor('response', success, error);
+  function setResponseInterceptor(success, error) {
+    __responseInterceptor = __setInterceptor(
+      INTERCEPTOR_TYPE.RESPONSE,
+      success,
+      error
+    );
   }
 
-  function __addInterceptor(type, success, error) {
+  function __setInterceptor(type, success, error) {
+    // Allow only one interceptor type per instance
+    __removeInterceptor(type);
+
     return instance().interceptors[type].use(success, error);
   }
 
-  function __removeInterceptor(type, ref) {
+  function __removeInterceptor(type) {
     const handlers = instance().interceptors[type].handlers;
+    const ref =
+      type === INTERCEPTOR_TYPE.RESPONSE
+        ? __responseInterceptor
+        : __requestInterceptor;
 
     if (handlers[ref]) {
       handlers.splice(ref, 1);
@@ -57,8 +74,8 @@ const http = (function () {
     setBaseURL,
     setAuthorization,
     removeAuthorization,
-    addRequestInterceptor,
-    addResponseInterceptor,
+    setRequestInterceptor,
+    setResponseInterceptor,
   };
 })();
 
