@@ -1,6 +1,6 @@
 {
   "name": "blokojs",
-  "version": "0.0.5-1",
+  "version": "0.0.5-2",
   "author": "Matheus Marques <marquesm91@gmail.com>",
   "main": "index.js",
   "files": [
