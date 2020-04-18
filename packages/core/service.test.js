@@ -13,8 +13,7 @@ describe('service', () => {
     handler({ query });
 
     expect(instance.get).toHaveBeenCalledTimes(1);
-    expect(instance.get).toHaveBeenCalledWith({
-      url: endpoint,
+    expect(instance.get).toHaveBeenCalledWith(endpoint, {
       params: query,
     });
   });
@@ -29,10 +28,12 @@ describe('service', () => {
     handler({ query, params });
 
     expect(instance.get).toHaveBeenCalledTimes(1);
-    expect(instance.get).toHaveBeenCalledWith({
-      url: endpoint.replace(':id', params.id),
-      params: query,
-    });
+    expect(instance.get).toHaveBeenCalledWith(
+      endpoint.replace(':id', params.id),
+      {
+        params: query,
+      }
+    );
   });
 
   it('should use correct endpoints params and body data with post method', () => {
@@ -45,10 +46,10 @@ describe('service', () => {
     handler({ data, params });
 
     expect(instance.post).toHaveBeenCalledTimes(1);
-    expect(instance.post).toHaveBeenCalledWith({
-      url: endpoint.replace(':id', params.id),
-      data,
-    });
+    expect(instance.post).toHaveBeenCalledWith(
+      endpoint.replace(':id', params.id),
+      data
+    );
   });
 
   it('should use correct endpoints params, body data and query params with post method', () => {
@@ -62,11 +63,11 @@ describe('service', () => {
     handler({ data, query, params });
 
     expect(instance.post).toHaveBeenCalledTimes(1);
-    expect(instance.post).toHaveBeenCalledWith({
-      url: endpoint.replace(':id', params.id),
-      params: query,
+    expect(instance.post).toHaveBeenCalledWith(
+      endpoint.replace(':id', params.id),
       data,
-    });
+      { params: query }
+    );
   });
 
   it('should use correct key prop for payload request data', () => {

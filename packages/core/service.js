@@ -1,25 +1,39 @@
 import http from './http';
 
 function handler(method, endpoint, options) {
-  let requestOptions = { url: endpoint };
-  let params = getParams(requestOptions.url);
+  let _endpoint = endpoint;
+
+  let endpointParams = getEndpointParams(_endpoint);
 
   return function runner(payload = {}) {
-    params.forEach(param => {
-      const key = ':' + param;
-      const value = payload.params[param];
+    endpointParams.forEach(endpointParam => {
+      const key = ':' + endpointParam;
+      const value = payload.params[endpointParam];
 
-      requestOptions.url = requestOptions.url.replace(key, value);
+      _endpoint = _endpoint.replace(key, value);
     });
 
-    requestOptions.data = payload.data;
-    requestOptions.params = payload.query;
+    const requestParams = buildRequestParams(method, _endpoint, payload);
 
-    return http.instance()[method](requestOptions);
+    return http.instance()[method](...requestParams);
   };
 }
 
-function getParams(endpoint) {
+function buildRequestParams(method, endpoint, payload) {
+  let requestParams = [endpoint];
+
+  if (method === 'post' || method === 'put' || method === 'patch') {
+    requestParams.push(payload.data);
+  }
+
+  if (payload.query) {
+    requestParams.push({ params: payload.query });
+  }
+
+  return requestParams;
+}
+
+function getEndpointParams(endpoint) {
   try {
     return endpoint.match(/:\w+/g).map(param => {
       // remove : character
