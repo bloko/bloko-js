@@ -1,10 +1,6 @@
 import http from './http';
 
 describe('http', () => {
-  beforeEach(() => {
-    http.destroy();
-  });
-
   it('should handle baseURL', () => {
     const instance = http.instance();
     const url = 'https://example.com';

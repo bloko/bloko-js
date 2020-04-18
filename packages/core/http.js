@@ -17,10 +17,6 @@ const http = (function () {
     return __instance;
   }
 
-  function destroy() {
-    __instance = null;
-  }
-
   function setBaseURL(url) {
     instance().defaults.baseURL = url;
   }
@@ -70,7 +66,6 @@ const http = (function () {
 
   return {
     instance,
-    destroy,
     setBaseURL,
     setAuthorization,
     removeAuthorization,
