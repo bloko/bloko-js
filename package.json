@@ -2,7 +2,7 @@
   "name": "blokojs",
   "version": "0.0.5-1",
   "author": "Matheus Marques <marquesm91@gmail.com>",
-  "main": "dist/core/index",
+  "main": "index.js",
   "files": [
     "dist",
     "types"
