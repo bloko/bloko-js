@@ -15,7 +15,7 @@ function handler(method, endpoint, options) {
 
     const requestParams = buildRequestParams(method, _endpoint, payload);
 
-    return http.instance()[method](...requestParams);
+    return http.instance()[method].apply(null, requestParams);
   };
 }
 
