@@ -4,7 +4,7 @@ export type HttpPromise = AxiosPromise;
 
 declare module http {
   type Fulfilled = (value: V) => V | Promise<V>;
-  type Rejected = (error: any) => any): void;
+  type Rejected = (error: any) => any | void;
 
   export function instance(): AxiosInstance;
   export function destroy(): void;

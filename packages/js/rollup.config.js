@@ -7,9 +7,9 @@ import { terser } from 'rollup-plugin-terser';
 
 export default [
   {
-    input: 'packages/index.js',
+    input: 'src/index.js',
     output: {
-      file: 'dist/bloko.js',
+      file: 'dist/core.js',
       format: 'cjs',
     },
     external: ['axios'],
@@ -22,9 +22,9 @@ export default [
     ],
   },
   {
-    input: 'packages/index.js',
+    input: 'src/index.js',
     output: {
-      file: 'dist/bloko.min.js',
+      file: 'dist/core.min.js',
       format: 'cjs',
       indent: false,
     },
