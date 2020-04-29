@@ -2,6 +2,7 @@ module.exports = {
   root: true,
 
   globals: {
+    Map: true,
     Promise: true,
   },
 

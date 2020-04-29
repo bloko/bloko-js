@@ -7,12 +7,37 @@ import { terser } from 'rollup-plugin-terser';
 
 export default [
   {
-    input: 'src/index.js',
+    input: 'test/http-mock.js',
     output: {
-      file: 'dist/core.js',
+      file: 'http-mock.js',
+      format: 'cjs',
+    },
+    plugins: [
+      replace({
+        delimiters: ['', ''],
+        values: {
+          '../src/utils/http': './dist/utils/http',
+          ').default': ')',
+        },
+      }),
+    ],
+  },
+  {
+    input: 'src/utils/http.js',
+    output: {
+      file: 'dist/utils/http.js',
       format: 'cjs',
     },
     external: ['axios'],
+    plugins: [resolve(), commonjs(), babel(), terser()],
+  },
+  {
+    input: 'src/index.js',
+    output: {
+      file: 'dist/index.js',
+      format: 'cjs',
+    },
+    external: ['./utils/http'],
     plugins: [
       resolve(),
       commonjs(),
@@ -24,11 +49,11 @@ export default [
   {
     input: 'src/index.js',
     output: {
-      file: 'dist/core.min.js',
+      file: 'dist/index.min.js',
       format: 'cjs',
       indent: false,
     },
-    external: ['axios'],
+    external: ['./utils/http'],
     plugins: [
       resolve(),
       commonjs(),

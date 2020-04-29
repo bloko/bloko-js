@@ -1,16 +1,33 @@
 {
-  "name": "bloko",
+  "name": "@bloko/js",
+  "version": "0.0.0",
   "private": true,
   "license": "MIT",
+  "author": "Matheus Marques <marquesm91@gmail.com>",
+  "main": "index.js",
+  "files": [
+    "dist",
+    "types",
+    "http-mock.js"
+  ],
   "scripts": {
     "test": "jest --watchAll=false --coverage",
     "test:watch": "jest --watch",
+    "build": "rollup -c",
     "lint:check": "eslint --ext .js .",
-    "lint": "npm run lint:check -- --fix"
+    "lint": "npm run lint:check -- --fix",
+    "predeploy": "rm -rf dist && npm run build",
+    "deploy": "np"
   },
+  "dependencies": {},
   "devDependencies": {
     "@babel/core": "^7.9.0",
     "@babel/preset-env": "^7.9.5",
+    "@rollup/plugin-commonjs": "^11.1.0",
+    "@rollup/plugin-node-resolve": "^7.1.3",
+    "@rollup/plugin-replace": "^2.3.1",
+    "@types/jest": "^25.2.1",
+    "axios": "^0.19.2",
     "babel-eslint": "^10.1.0",
     "babel-jest": "^25.3.0",
     "eslint": "^6.8.0",
@@ -19,6 +36,31 @@
     "eslint-plugin-prettier": "^3.1.3",
     "jest": "^25.3.0",
     "jest-watch-typeahead": "^0.5.0",
-    "prettier": "^2.0.4"
-  }
+    "np": "^6.2.1",
+    "prettier": "^2.0.4",
+    "rollup": "^2.6.1",
+    "rollup-plugin-babel": "^4.4.0",
+    "rollup-plugin-size-snapshot": "^0.11.0",
+    "rollup-plugin-terser": "^5.3.0"
+  },
+  "peerDependencies": {
+    "axios": "*"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bloko/bloko-js.git"
+  },
+  "bugs": {
+    "url": "https://github.com/bloko/bloko-js/issues"
+  },
+  "homepage": "https://github.com/bloko/bloko-js#readme",
+  "keywords": [
+    "bloko",
+    "bloko-js"
+  ],
+  "sideEffects": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "typings": "types/index.d.ts"
 }
