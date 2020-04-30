@@ -22,7 +22,7 @@
 Bloko is currently under heavy development, but can be installed by running either of these commands:
 
 ```sh
-npm install @bloko/js
+npm install --save @bloko/js
 ```
 
 or
