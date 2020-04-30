@@ -11,9 +11,7 @@ describe('combineModels', () => {
 
     combineModels({ U, T, V });
 
-    // I = Identity setted on test/setupTests
-    expect(models.size).toEqual(4);
-    expect(models.has('I')).toEqual(true);
+    expect(models.size).toEqual(3);
     expect(models.has('U')).toEqual(true);
     expect(models.has('T')).toEqual(true);
     expect(models.has('V')).toEqual(true);

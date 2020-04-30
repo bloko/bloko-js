@@ -1,9 +1,5 @@
 import combineBlokos from './combineBlokos';
 import combineModels from './combineModels';
-import Identity from './utils/Identity';
-import * as state from './utils/state';
-
-state.models.set('I', Identity);
 
 function combine({ models, blokos }) {
   combineModels(models);

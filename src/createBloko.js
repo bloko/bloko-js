@@ -80,8 +80,8 @@ function getBlokoActions(instance) {
 
 function getActionInterface(blokoName, actionName, instance) {
   const allowedKeys = {
-    repository: 'string',
-    transition: 'string',
+    repository: ['string', 'function'],
+    transition: ['string', 'object'],
     success: 'function',
     failure: 'function',
   };
@@ -98,27 +98,17 @@ function getActionInterface(blokoName, actionName, instance) {
 
   // failure and transition key can be optional
   _interface.failure = _interface.failure || noop;
-  _interface.transition = _interface.transition || 'I -> I';
+  _interface.transition = _interface.transition || {
+    input: identity,
+    output: identity,
+  };
 
-  Object.entries(allowedKeys).forEach(([key, type]) => {
-    const value = _interface[key];
-    const hasInInterface = Boolean(value);
-    const hasCorrectType = typeof value === type;
+  Object.entries(allowedKeys).forEach(([key, allowed]) => {
+    const error = findInterfaceError(_interface, key, allowed);
 
-    if (!hasInInterface) {
-      const capitalizedKey = key.charAt(0).toUpperCase() + key.slice(1);
-
+    if (error) {
       throw new Error(
-        `[${blokoName}]: action ${actionName} must implement ${capitalizedKey}`
-      );
-    }
-
-    if (!hasCorrectType) {
-      const capitalizedKey = key.charAt(0).toUpperCase() + key.slice(1);
-      const capitalizedType = type.charAt(0).toUpperCase() + type.slice(1);
-
-      throw new Error(
-        `[${blokoName}]: action ${actionName} must implement ${capitalizedKey} as a ${capitalizedType}`
+        `[${blokoName}]: action ${actionName} must implement ${error.key} as a ${error.value}`
       );
     }
   });
@@ -126,34 +116,89 @@ function getActionInterface(blokoName, actionName, instance) {
   return _interface;
 }
 
-/* istanbul ignore next */
-function noop() {}
+function findInterfaceError(_interface, key, allowedTypes) {
+  const value = _interface[key];
+  const types = Array.isArray(allowedTypes) ? allowedTypes : [allowedTypes];
+
+  if (types.indexOf(typeof value) === -1) {
+    return {
+      key,
+      value: types.join(' or '),
+    };
+  }
+
+  if (key === 'transition') {
+    if (typeof _interface[key] === 'object') {
+      if (
+        _interface[key].input &&
+        typeof _interface[key].input !== 'function'
+      ) {
+        return {
+          key: `${key}.input`,
+          value: 'function',
+        };
+      }
+
+      if (
+        _interface[key].output &&
+        typeof _interface[key].output !== 'function'
+      ) {
+        return {
+          key: `${key}.output`,
+          value: 'function',
+        };
+      }
+    }
+  }
+
+  return null;
+}
 
 function isObject(value) {
   return !!(value && typeof value === 'object' && !Array.isArray(value));
 }
 
-let _cacheRepositories = {};
+const cache = new Map();
 
 function getRepository(repository, repositoryOptions) {
-  if (!_cacheRepositories[repository]) {
-    _cacheRepositories[repository] = createRepository(
-      repository,
-      repositoryOptions
-    );
+  let cached = cache.get(repository);
+
+  if (!cached) {
+    cached =
+      typeof repository === 'string'
+        ? createRepository(repository, repositoryOptions)
+        : data => repository(data, repositoryOptions);
+
+    cache.set(repository, cached);
   }
 
-  return _cacheRepositories[repository];
+  return cached;
 }
-
-let _cacheTransitions = {};
 
 function getTransition(transition) {
-  if (!_cacheTransitions[transition]) {
-    _cacheTransitions[transition] = createTransition(transition);
+  let cached = cache.get(transition);
+
+  if (!cached) {
+    if (typeof transition === 'string') {
+      cached = createTransition(transition);
+    } else {
+      transition.input = transition.input || identity;
+      transition.output = transition.output || identity;
+
+      cached = transition;
+    }
+
+    cache.set(transition, cached);
   }
 
-  return _cacheTransitions[transition];
+  return cached;
 }
+
+function identity(v) {
+  return v;
+}
+
+/* istanbul ignore next */
+function noop() {}
 
 export default createBloko;
