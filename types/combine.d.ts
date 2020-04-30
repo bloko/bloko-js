@@ -1,7 +1,7 @@
 import { Model } from './model';
-import { Bloko } from './bloko';
+import { BlokoClass } from './bloko';
 
 export interface Combine {
-  models: Model[],
-  blokos: Bloko[],
+  models: { [key: string]: Model };
+  blokos: { [key: string]: BlokoClass };
 }
