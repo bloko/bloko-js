@@ -1,4 +1,4 @@
-import { models } from './utils/state';
+import { models } from './getters/state';
 
 function combineModels(obj) {
   Object.keys(obj).forEach(modelName => {

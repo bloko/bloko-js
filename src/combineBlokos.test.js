@@ -1,7 +1,7 @@
 import combineBlokos from './combineBlokos';
-import getState from './utils/getState';
-import http from './utils/http';
-import { blokos } from './utils/state';
+import getState from './getters/getState';
+import { blokos } from './getters/state';
+import http from './http';
 
 describe('combineBlokos', () => {
   it('should correctly combine valid blokos', () => {

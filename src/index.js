@@ -7,7 +7,7 @@ function combine({ models, blokos }) {
 }
 
 export { combine };
-export { default as http } from './utils/http';
-export { default as Model } from './utils/Model';
-export { default as getState } from './utils/getState';
-export { default as getBloko } from './utils/getBloko';
+export { default as http } from './http';
+export { default as Model } from './Model';
+export { default as getState } from './getters/getState';
+export { default as getBloko } from './getters/getBloko';

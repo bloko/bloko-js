@@ -1,5 +1,5 @@
 import createBloko from './createBloko';
-import { blokos } from './utils/state';
+import { blokos } from './getters/state';
 
 function combineBlokos(obj) {
   return Object.keys(obj).forEach(name => {

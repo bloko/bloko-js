@@ -1,4 +1,4 @@
-import getModel from './utils/getModel';
+import getModel from './getters/getModel';
 
 function createTransition(transitionString) {
   const [inputName, ...outputNames] = transitionString.match(/[^ {,}\->]+/g);

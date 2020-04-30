@@ -1,5 +1,5 @@
-jest.mock('../src/utils/http', () => {
-  const http = jest.requireActual('../src/utils/http').default;
+jest.mock('../src/http', () => {
+  const http = jest.requireActual('../src/http').default;
   const mocks = {
     get: jest.fn(),
     post: jest.fn(),
@@ -24,7 +24,7 @@ jest.mock('../src/utils/http', () => {
 // auto cleanup if test runner supports afterEach function
 if (typeof afterEach === 'function') {
   afterEach(() => {
-    const http = require('../src/utils/http');
+    const http = require('../src/http');
     const instance = http.instance();
 
     instance.get.mockReset();

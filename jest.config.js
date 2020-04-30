@@ -21,7 +21,10 @@ module.exports = {
   collectCoverageFrom: [
     '<rootDir>/src/**/*.js',
     '!src/**/index.js',
-    '!src/utils/getContext.js',
+    '!src/getters/getContext.js',
+    '!src/getters/noop.js',
+    '!src/getters/identity.js',
+    '!src/getters/**.prod.js',
     '!type/**/*.d.ts',
     '!**/node_modules/**',
   ],

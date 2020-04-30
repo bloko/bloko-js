@@ -1,7 +1,7 @@
 import createBloko from './createBloko';
-import http from './utils/http';
-import Model from './utils/Model';
-import { models } from './utils/state';
+import { models } from './getters/state';
+import http from './http';
+import Model from './Model';
 
 const contextMock = { commit: jest.fn(), state: {} };
 

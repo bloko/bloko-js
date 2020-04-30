@@ -1,5 +1,5 @@
 import combineModels from './combineModels';
-import { models } from './utils/state';
+import { models } from './getters/state';
 
 describe('combineModels', () => {
   it('should correct save object models in models Map', () => {

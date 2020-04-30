@@ -1,4 +1,5 @@
-import http from './utils/http';
+import getEndpointParams from './getters/getEndpointParams';
+import http from './http';
 
 function createRepository(repositoryString, options = {}) {
   let [method, endpoint] = repositoryString.split(' ');
@@ -33,32 +34,6 @@ function buildRequestParams(method, endpoint, payload, options) {
   }
 
   return requestParams;
-}
-
-function getEndpointParams(endpoint, params) {
-  const matchParams = endpoint.match(/:\w+/g);
-
-  if (!matchParams) {
-    const paramKeys = Object.keys(params).join(', ');
-
-    throw new Error(`Cannot found params ${paramKeys} in endpoint ${endpoint}`);
-  }
-
-  return matchParams.reduce((acc, param) => {
-    // remove :
-    const key = param.slice(1);
-    const value = params[key];
-
-    if (!value) {
-      const paramKeys = Object.keys(params).join(', ');
-
-      throw new Error(
-        `Cannot found param ${key} in params object { ${paramKeys} }`
-      );
-    }
-
-    return acc.replace(param, value);
-  }, endpoint);
 }
 
 export default createRepository;

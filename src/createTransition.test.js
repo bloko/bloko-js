@@ -1,6 +1,6 @@
 import createTransition from './createTransition';
-import Model from './utils/Model';
-import { models } from './utils/state';
+import { models } from './getters/state';
+import Model from './Model';
 
 const initialNumber = 1;
 

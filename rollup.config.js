@@ -16,16 +16,16 @@ export default [
       replace({
         delimiters: ['', ''],
         values: {
-          '../src/utils/http': './dist/utils/http',
+          '../src/http': './dist/http',
           ').default': ')',
         },
       }),
     ],
   },
   {
-    input: 'src/utils/http.js',
+    input: 'src/http.js',
     output: {
-      file: 'dist/utils/http.js',
+      file: 'dist/http.js',
       format: 'cjs',
     },
     external: ['axios'],
@@ -37,7 +37,7 @@ export default [
       file: 'dist/index.js',
       format: 'cjs',
     },
-    external: ['./utils/http'],
+    external: ['./http'],
     plugins: [
       resolve(),
       babel(),
@@ -53,8 +53,17 @@ export default [
       format: 'cjs',
       indent: false,
     },
-    external: ['./utils/http'],
+    external: ['./http'],
     plugins: [
+      replace({
+        delimiters: ['', ''],
+        values: {
+          './getters/getActionInterface': './getters/getActionInterface.prod',
+          './getters/getEndpointParams': './getters/getEndpointParams.prod',
+          './getters/getBloko': './getters/getBloko.prod',
+          './getters/getModel': './getters/getModel.prod',
+        },
+      }),
       resolve(),
       babel(),
       commonjs(),
