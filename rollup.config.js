@@ -29,7 +29,7 @@ export default [
       format: 'cjs',
     },
     external: ['axios'],
-    plugins: [resolve(), commonjs(), babel(), terser()],
+    plugins: [resolve(), babel(), commonjs(), terser()],
   },
   {
     input: 'src/index.js',
@@ -40,8 +40,8 @@ export default [
     external: ['./utils/http'],
     plugins: [
       resolve(),
-      commonjs(),
       babel(),
+      commonjs(),
       replace({ 'process.env.NODE_ENV': JSON.stringify('development') }),
       sizeSnapshot(),
     ],
@@ -56,8 +56,8 @@ export default [
     external: ['./utils/http'],
     plugins: [
       resolve(),
-      commonjs(),
       babel(),
+      commonjs(),
       replace({ 'process.env.NODE_ENV': JSON.stringify('production') }),
       terser(),
       sizeSnapshot(),
