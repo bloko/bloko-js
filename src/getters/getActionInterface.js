@@ -1,4 +1,5 @@
 import identity from './identity';
+import isObject from './isObject';
 import noop from './noop';
 
 function getActionInterface(instance, actionName, blokoName) {
@@ -75,10 +76,6 @@ function findInterfaceError(_interface, key, allowedTypes) {
   }
 
   return null;
-}
-
-function isObject(value) {
-  return !!(value && typeof value === 'object' && !Array.isArray(value));
 }
 
 export default getActionInterface;
