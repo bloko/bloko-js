@@ -35,8 +35,6 @@ function createUnitBloko(descriptor) {
       const { defaultValue, handler, rules } = create.__descriptor__[key];
       const value = payload[key];
 
-      // console.log(handler, defaultValue);
-
       if (isBloko(handler)) {
         let tmp = create.__descriptor__;
 
