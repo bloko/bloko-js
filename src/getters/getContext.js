@@ -1,3 +1,4 @@
+import isObject from './isObject';
 let state = {};
 
 function getContext() {
@@ -17,10 +18,6 @@ function commit(partial) {
       state[key] = value;
     }
   });
-}
-
-function isObject(value) {
-  return !!(value && typeof value === 'object' && !Array.isArray(value));
 }
 
 export default getContext;
