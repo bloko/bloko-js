@@ -55,7 +55,7 @@ describe('createUnitBloko', () => {
     expect(BlokoExplicit({ name: 'name' })).toEqual({ name: 'Name' });
   });
 
-  it('should handle aggregate props', () => {
+  it('should handle derivated props', () => {
     const Bloko = createUnitBloko({
       firstName: '',
       lastName: '',
@@ -223,17 +223,6 @@ describe('createUnitBloko', () => {
       name: 'parent',
       childOne: ChildOne,
       childThree: ChildThree,
-    });
-
-    expect(Parent()).toEqual({
-      name: 'parent',
-      childOne: {
-        name: 'child1',
-      },
-      childThree: {
-        name: 'child3',
-        childTwo: [],
-      },
     });
 
     expect(Parent()).toEqual({
