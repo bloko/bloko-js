@@ -31,40 +31,35 @@ describe('createUnitBloko', () => {
 
   it('should handle descriptor with default values and handlers', () => {
     function capitalize(value) {
-      if (typeof value !== 'string') {
-        return value;
-      }
-
       return value.charAt(0).toUpperCase() + value.slice(1);
     }
 
     const Bloko = createUnitBloko({
-      name: capitalize,
-    });
-
-    const BlokoExplicit = createUnitBloko({
       name: {
-        value: '',
-        handler: capitalize,
+        value(name) {
+          return name ? capitalize(name) : '';
+        },
       },
     });
 
-    expect(Bloko()).toEqual({ name: undefined });
+    expect(Bloko()).toEqual({ name: '' });
     expect(Bloko({ name: 'name' })).toEqual({ name: 'Name' });
-    expect(BlokoExplicit()).toEqual({ name: '' });
-    expect(BlokoExplicit({ name: 'name' })).toEqual({ name: 'Name' });
   });
 
   it('should handle derivated props', () => {
     const Bloko = createUnitBloko({
       firstName: '',
-      lastName: '',
-      fullName(_, data) {
-        if (!data) {
+      lastName: {
+        value(lastName) {
+          return lastName ? lastName.toUpperCase() : '';
+        },
+      },
+      fullName() {
+        if (!this.firstName || !this.lastName) {
           return '';
         }
 
-        return data.firstName + ' ' + data.lastName;
+        return this.firstName + ' ' + this.lastName;
       },
     });
 
@@ -75,7 +70,8 @@ describe('createUnitBloko', () => {
 
     const expected = {
       ...data,
-      fullName: data.firstName + ' ' + data.lastName,
+      lastName: data.lastName.toUpperCase(),
+      fullName: data.firstName + ' ' + data.lastName.toUpperCase(),
     };
 
     expect(Bloko(data)).toEqual(expected);
@@ -124,8 +120,9 @@ describe('createUnitBloko', () => {
 
     const Bloko = createUnitBloko({
       name: {
-        value: '',
-        handler: capitalize,
+        value(name) {
+          return name ? capitalize(name) : '';
+        },
         rules: [
           v => !!v || requiredMessage,
           v => v.length >= 4 || smallMessage,
@@ -183,7 +180,7 @@ describe('createUnitBloko', () => {
     expect(Bloko.Array.validate(bloko)).toEqual(false);
   });
 
-  it('should only get rules from its Unit Bloko with Bloko.rules', () => {
+  it('should get rules swith Bloko.rules', () => {
     const isRequiredRule = v => !!v || 'Name is required';
 
     const Bloko = createUnitBloko({
@@ -201,6 +198,9 @@ describe('createUnitBloko', () => {
 
     expect(Bloko.rules).toEqual({
       name: [isRequiredRule],
+      child: {
+        childName: [isRequiredRule],
+      },
     });
   });
 

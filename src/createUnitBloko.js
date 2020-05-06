@@ -1,15 +1,17 @@
-import identity from './getters/identity';
 import isObject from './getters/isObject';
 
 function createUnitBloko(descriptor) {
-  create.__descriptor__ = normalizeDescriptor(descriptor);
+  const { props, derivated } = normalizeDescriptor(descriptor);
+
+  create.__props__ = props;
+  create.__derivated__ = derivated;
   create.rules = getRules(descriptor);
 
-  array.__descriptor__ = create.__descriptor__;
+  array.__props__ = create.__props__;
+  array.__derivated__ = create.__derivated__;
   array.__array__ = true;
 
   create.Array = array;
-  create.Array.__array__ = true;
   create.Array.validate = validateArray;
 
   create.validate = validate;
@@ -28,37 +30,49 @@ function createUnitBloko(descriptor) {
     }
   }
 
-  function create(payload = {}) {
+  function create(payload) {
     let result = {};
 
-    Object.keys(create.__descriptor__).forEach(key => {
-      const { defaultValue, handler, rules } = create.__descriptor__[key];
-      const value = payload[key];
+    Object.keys(create.__props__).forEach(key => {
+      const { handler, rules } = create.__props__[key];
+      const value = payload && payload[key];
 
       if (isBloko(handler)) {
-        let tmp = create.__descriptor__;
+        let tmpProps = create.__props__;
+        let tmpDerivated = create.__derivated__;
 
-        create.__descriptor__ = handler.__descriptor__;
+        create.__props__ = handler.__props__;
+        create.__derivated__ = handler.__derivated__;
+
         result[key] = handler.__array__ ? array(value) : create(value);
 
-        create.__descriptor__ = tmp;
-      } else if (value === undefined) {
-        const _value = handler(value || defaultValue, payload);
-
-        result[key] = _value;
+        create.__props__ = tmpProps;
+        create.__derivated__ = tmpDerivated;
       } else {
-        const _value = handler(value || defaultValue, payload);
+        let _value = value || handler;
 
-        rules.forEach(rule => {
-          const errorMessage = rule(_value);
+        if (typeof handler === 'function') {
+          _value = handler(value);
+        }
 
-          if (typeof errorMessage === 'string') {
-            throw new Error(errorMessage);
-          }
-        });
+        if (payload && payload.hasOwnProperty(key)) {
+          rules.forEach(rule => {
+            const errorMessage = rule(_value);
+
+            if (typeof errorMessage === 'string') {
+              throw new Error(errorMessage);
+            }
+          });
+        }
 
         result[key] = _value;
       }
+    });
+
+    Object.keys(create.__derivated__).forEach(key => {
+      const handler = create.__derivated__[key];
+
+      result[key] = handler.call(result);
     });
 
     return result;
@@ -78,36 +92,38 @@ function createUnitBloko(descriptor) {
 }
 
 function normalizeDescriptor(descriptor) {
-  return Object.keys(descriptor).reduce((acc, key) => {
+  let derivated = {};
+  let props = {};
+
+  Object.keys(descriptor).forEach(key => {
     const data = descriptor[key];
 
     let keyDescriptor = {
-      defaultValue: data,
-      handler: identity,
+      handler: data,
       rules: [],
     };
 
-    if (isObject(data)) {
-      keyDescriptor.defaultValue = data.value;
+    if (!isBloko(data) && typeof data === 'function') {
+      derivated[key] = data;
+    } else {
+      if (isObject(data)) {
+        keyDescriptor.handler = data.value;
 
-      if (data.handler) {
-        keyDescriptor.handler = data.handler;
+        if (data.rules) {
+          keyDescriptor.rules = Array.isArray(data.rules)
+            ? data.rules
+            : [data.rules];
+        }
       }
 
-      if (data.rules) {
-        keyDescriptor.rules = Array.isArray(data.rules)
-          ? data.rules
-          : [data.rules];
-      }
-    } else if (typeof data === 'function') {
-      keyDescriptor.defaultValue = undefined;
-      keyDescriptor.handler = data;
+      props[key] = keyDescriptor;
     }
+  });
 
-    acc[key] = keyDescriptor;
-
-    return acc;
-  }, {});
+  return {
+    derivated,
+    props,
+  };
 }
 
 function getRules(descriptor) {
@@ -118,12 +134,16 @@ function getRules(descriptor) {
       acc[key] = Array.isArray(data.rules) ? data.rules : [data.rules];
     }
 
+    if (isBloko(data)) {
+      acc[key] = getRules(data.__props__);
+    }
+
     return acc;
   }, {});
 }
 
 function isBloko(value) {
-  return Boolean(value && value.__descriptor__);
+  return Boolean(value && value.__props__);
 }
 
 export default createUnitBloko;
