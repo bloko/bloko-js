@@ -36,6 +36,7 @@ export default [
     output: {
       file: 'dist/index.js',
       format: 'cjs',
+      exports: 'named',
     },
     external: ['./http'],
     plugins: [
@@ -51,19 +52,11 @@ export default [
     output: {
       file: 'dist/index.min.js',
       format: 'cjs',
+      exports: 'named',
       indent: false,
     },
     external: ['./http'],
     plugins: [
-      replace({
-        delimiters: ['', ''],
-        values: {
-          './getters/getActionInterface': './getters/getActionInterface.prod',
-          './getters/getEndpointParams': './getters/getEndpointParams.prod',
-          './getters/getBloko': './getters/getBloko.prod',
-          './getters/getModel': './getters/getModel.prod',
-        },
-      }),
       resolve(),
       babel(),
       commonjs(),

@@ -1,15 +1,15 @@
-import createUnitBloko from './createUnitBloko';
+import createUnit from './createUnit';
 
-describe('createUnitBloko', () => {
+describe('createUnit', () => {
   it('should handle default values', () => {
     const defaultString = '';
     const defaultInt = 1;
 
-    const Bloko = createUnitBloko({
+    const Bloko = createUnit({
       name: defaultInt,
     });
 
-    const BlokoExplicit = createUnitBloko({
+    const BlokoExplicit = createUnit({
       name: {
         value: defaultString,
       },
@@ -20,7 +20,7 @@ describe('createUnitBloko', () => {
   });
 
   it('should handle default values as array', () => {
-    const Bloko = createUnitBloko({
+    const Bloko = createUnit({
       name: 'child1',
     });
 
@@ -34,7 +34,7 @@ describe('createUnitBloko', () => {
       return value.charAt(0).toUpperCase() + value.slice(1);
     }
 
-    const Bloko = createUnitBloko({
+    const Bloko = createUnit({
       name: {
         value(name) {
           return name ? capitalize(name) : '';
@@ -47,7 +47,7 @@ describe('createUnitBloko', () => {
   });
 
   it('should handle derivated props', () => {
-    const Bloko = createUnitBloko({
+    const Bloko = createUnit({
       firstName: '',
       lastName: {
         value(lastName) {
@@ -86,13 +86,13 @@ describe('createUnitBloko', () => {
       v => v.length >= 4 || smallMessage,
     ];
 
-    const BlokoOneRule = createUnitBloko({
+    const BlokoOneRule = createUnit({
       name: {
         rules: rules[0],
       },
     });
 
-    const BlokoTwoRules = createUnitBloko({
+    const BlokoTwoRules = createUnit({
       name: {
         rules,
       },
@@ -118,7 +118,7 @@ describe('createUnitBloko', () => {
     const requiredMessage = 'Name is required';
     const smallMessage = 'Name is small';
 
-    const Bloko = createUnitBloko({
+    const Bloko = createUnit({
       name: {
         value(name) {
           return name ? capitalize(name) : '';
@@ -139,7 +139,7 @@ describe('createUnitBloko', () => {
   it('should validate input data with Bloko.validation', () => {
     const requiredMessage = 'Name is required';
 
-    const Bloko = createUnitBloko({
+    const Bloko = createUnit({
       name: {
         value: '',
         rules: v => !!v || requiredMessage,
@@ -160,7 +160,7 @@ describe('createUnitBloko', () => {
   it('should validate input array data with Bloko.validation', () => {
     const requiredMessage = 'Name is required';
 
-    const Bloko = createUnitBloko({
+    const Bloko = createUnit({
       name: {
         value: '',
         rules: v => !!v || requiredMessage,
@@ -183,12 +183,12 @@ describe('createUnitBloko', () => {
   it('should get rules swith Bloko.rules', () => {
     const isRequiredRule = v => !!v || 'Name is required';
 
-    const Bloko = createUnitBloko({
+    const Bloko = createUnit({
       name: {
         value: '',
         rules: isRequiredRule,
       },
-      child: createUnitBloko({
+      child: createUnit({
         childName: {
           value: 'childName',
           rules: isRequiredRule,
@@ -205,21 +205,21 @@ describe('createUnitBloko', () => {
   });
 
   it('should handle inheritance between unit blokos', () => {
-    const ChildOne = createUnitBloko({
+    const ChildOne = createUnit({
       name: 'child1',
     });
 
-    const ChildTwo = createUnitBloko({
+    const ChildTwo = createUnit({
       name: 'child2',
       id: 1,
     });
 
-    const ChildThree = createUnitBloko({
+    const ChildThree = createUnit({
       name: 'child3',
       childTwo: ChildTwo.Array,
     });
 
-    const Parent = createUnitBloko({
+    const Parent = createUnit({
       name: 'parent',
       childOne: ChildOne,
       childThree: ChildThree,

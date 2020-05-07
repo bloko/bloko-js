@@ -1,13 +1,11 @@
-import combineBlokos from './combineBlokos';
-import combineModels from './combineModels';
+import createStore from './createStore';
+import createUnit from './createUnit';
+import http from './http';
+import * as globalState from './utils/globalState';
 
-function combine({ models, blokos }) {
-  combineModels(models);
-  combineBlokos(blokos);
-}
+export default {
+  create: createUnit,
+  createStore,
+};
 
-export { combine };
-export { default as http } from './http';
-export { default as Model } from './Model';
-export { default as getState } from './getters/getState';
-export { default as getBloko } from './getters/getBloko';
+export { http, globalState };

@@ -1,6 +1,7 @@
-import isObject from './getters/isObject';
+import isFunction from './utils/isFunction';
+import isObject from './utils/isObject';
 
-function createUnitBloko(descriptor) {
+function createUnit(descriptor) {
   const { props, derivated } = normalizeDescriptor(descriptor);
 
   create.__props__ = props;
@@ -51,7 +52,7 @@ function createUnitBloko(descriptor) {
       } else {
         let _value = value || handler;
 
-        if (typeof handler === 'function') {
+        if (isFunction(handler)) {
           _value = handler(value);
         }
 
@@ -103,7 +104,7 @@ function normalizeDescriptor(descriptor) {
       rules: [],
     };
 
-    if (!isBloko(data) && typeof data === 'function') {
+    if (!isBloko(data) && isFunction(data)) {
       derivated[key] = data;
     } else {
       if (isObject(data)) {
@@ -146,4 +147,4 @@ function isBloko(value) {
   return Boolean(value && value.__props__);
 }
 
-export default createUnitBloko;
+export default createUnit;
