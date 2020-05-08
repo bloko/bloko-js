@@ -24,6 +24,7 @@
 [npm-image]: https://img.shields.io/npm/v/@bloko/js.svg
 
 ## Packages
+
 * 🧱`@bloko/js` - Core library and utilities to handle Blokos
 * [⚛️`@bloko/react`](https://github.com/bloko/bloko-react) - React hooks and utilities for using Bloko in React applications
 
@@ -33,9 +34,9 @@ Bloko is currently under heavy development, but can be installed by running:
 npm install --save @bloko/js
 ```
 
-## Unit Blokos
+## Blokos Unit
 
-Unit Blokos are the smaller of Blokos. Using these Blokos you can describe the application's Entities.
+Blokos Unit are the smaller of Blokos. Using these Blokos you can describe the application's Entities.
 
 ### A quick example
 
@@ -56,7 +57,7 @@ User({ name: 'John' });
 
 ### Derivated props
 
-Unit Blokos can allow you to create derivated data from other props.
+Blokos Unit can allow you to create derivated data from other props.
 
 ```js
 import Bloko from '@bloko/js';
@@ -82,7 +83,7 @@ User({ name: 'John', surname: 'S.' });
 
 ### Rules and Transformations
 
-Unit Blokos can check prop rules and do transformations when needed.
+Blokos Unit can check prop rules and do transformations when needed.
 
 ```js
 import Bloko from '@bloko/js';
@@ -124,9 +125,9 @@ User.validate({ name: 'John', surname: 'S.' });
 // => true
 ```
 
-### Composition between Unit Blokos
+### Composition between Blokos Unit
 
-Unit Blokos can be more complex and compose other Unit Blokos and check children rules directly from parent.
+Blokos Unit can be more complex and compose other Blokos Unit and check children rules directly from parent.
 
 ```js
 import Bloko from '@bloko/js';
@@ -156,9 +157,9 @@ User({ name: 'John', address: { zipcode: '84275' } });
 // => { name: 'John', address: { zipcode: '84275' } }
 ```
 
-## Store Bloko
+## Blokos Store
 
-Store Blokos are the next important Bloko. Using these Blokos you can describe how application's global state will behave based on its actions.
+Blokos Store are the next important Bloko. Using these Blokos you can describe how application's global state will behave based on its actions.
 
 ### A brief example
 
@@ -196,9 +197,9 @@ const Auth = Bloko.createStore({
 
 `Auth` will store all its actions and current state on application's global state and could be accessed by its key `auth`.
 
-Store Blokos needs a context to work and specific bloko libraries like [bloko-react](https://github.com/bloko/bloko-react) will give it.
+Blokos Store needs a context to work and specific bloko libraries like [`bloko-react`](https://github.com/bloko/bloko-react) will give it using [`Bloko.Provider`](https://github.com/bloko/bloko-react#bloko-provider).
 
-When you call `signIn` with its necessary payload `repository` handler will be called. The example above will fire a http request simulating an authentication flow. When it is finished and has a green response, `resolved` handler will be called and must return a full or partial state to update its current Store state. Given the example, session will be updated with a new token in `data.token`.
+When you call `signIn` with its necessary payload `repository` handler will be called. The example above will fire a http request simulating an authentication flow. When it is finished and has a green response, `resolved` handler will be called and must return a full or partial state to update its current Bloko Store state. Given the example, session will be updated with a new token in `data.token`.
 
 ## Why?
 
