@@ -7,7 +7,6 @@
   <br />
   <br />
   <br />
-  <br />
   </a>
 </p>
 
@@ -117,6 +116,9 @@ User();
 // and apply rules using fail fast strategy.
 User({ name: '' });
 // => Error: Name is required
+
+User({ name: 'John', surname: 'Smith' });
+// => { name: 'John',  surname: 'SMITH' }
 
 // You could check a raw object following User rules
 User.validate({ name: '' });
