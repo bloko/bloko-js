@@ -52,7 +52,7 @@ User({ name: 'John' });
 
 ### Derivated props
 
-Unit Blokos can allow you create derivated data from other props.
+Unit Blokos can allow you to create derivated data from other props.
 
 ```js
 import Bloko from '@bloko/js';
@@ -72,7 +72,7 @@ const User = Bloko.create({
 User();
 // => { name: '',  surname: '', fullName: '' }
 
-User({ firstName: 'John', lastName: 'S.' });
+User({ name: 'John', surname: 'S.' });
 // => { name: 'John',  surname: 'S.', fullName: 'John S.' }
 ```
 
