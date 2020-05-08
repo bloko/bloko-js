@@ -23,6 +23,10 @@
 [npm-url]: https://npmjs.com/package/@bloko/js
 [npm-image]: https://img.shields.io/npm/v/@bloko/js.svg
 
+## Packages
+* 🧱`@bloko/js` - Core library and utilities to handle Blokos
+* [⚛️`@bloko/react`](https://github.com/bloko/bloko-react) - React hooks and utilities for using Bloko in React applications
+
 Bloko is currently under heavy development, but can be installed by running:
 
 ```sh
