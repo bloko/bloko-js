@@ -1,9 +1,11 @@
 <p align="center">
   <a href="https://bloko.dev">
   <br />
-  <img src="https://user-images.githubusercontent.com/7120471/80561131-d98be300-89b9-11ea-9956-679a406a387e.png" alt="Logo Bloko" width="150"/>
+  <img src="https://user-images.githubusercontent.com/7120471/80561131-d98be300-89b9-11ea-9956-679a406a387e.png" alt="Logo Bloko" height="60"/>
   <br />
     <sub><strong>Build modular applications with JavaScript</strong></sub>
+  <br />
+  <br />
   <br />
   <br />
   </a>
