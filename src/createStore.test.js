@@ -65,6 +65,36 @@ describe('createStore', () => {
     });
   });
 
+  it('should initialize state with request state when has any action', () => {
+    const storeKey = 'key';
+    const blokoName = 'bloko';
+    const actionName = 'myAction';
+
+    const Store = createStore({
+      key: storeKey,
+      state: {
+        [blokoName]: Bloko,
+      },
+      actions: {
+        [actionName]: {
+          repository: jest.fn(),
+          resolved: jest.fn(),
+        },
+      },
+    });
+
+    expect(Store.state).toEqual({
+      [blokoName]: blokoDescriptor,
+      [actionName]: {
+        loading: false,
+        error: '',
+      },
+    });
+    expect(Store.actions).toEqual({
+      [actionName]: expect.any(Function),
+    });
+  });
+
   it('should handle actions correctly', async () => {
     const storeKey = 'key';
     const blokoName = 'bloko';
@@ -73,13 +103,20 @@ describe('createStore', () => {
     const actionName = 'myAction';
     const payload = { foo: 'bar' };
     const repository = jest.fn(() => ({ [blokoName]: payload }));
+    const loading = jest.fn(data => data);
     const resolved = jest.fn(data => data);
     const commit = jest.fn(data => {
-      globalState.setState(storeKey, data);
+      const currentState = globalState.getState();
+      const nextState = { ...currentState[storeKey], ...data };
+
+      globalState.setState(storeKey, nextState);
     });
     let contextMock = { commit, getState: globalState.getState };
 
-    globalState.setState(storeKey, { [blokoName]: blokoDescriptor });
+    globalState.setState(storeKey, {
+      [blokoName]: blokoDescriptor,
+      [actionName]: { loading: false, error: '' },
+    });
 
     const Store = createStore({
       key: storeKey,
@@ -91,6 +128,7 @@ describe('createStore', () => {
       },
       actions: {
         [actionName]: {
+          loading,
           repository,
           resolved,
         },
@@ -105,7 +143,12 @@ describe('createStore', () => {
 
     const nextBlokoState = globalState.getState()[storeKey];
 
-    expect(nextBlokoState).toEqual({ [blokoName]: payload });
+    expect(nextBlokoState).toEqual({
+      [blokoName]: payload,
+      [actionName]: { loading: false, error: '' },
+    });
+    expect(loading).toHaveBeenCalledTimes(1);
+    expect(loading).toHaveBeenCalledWith(payload, initialBlokoState);
     expect(repository).toHaveBeenCalledTimes(1);
     expect(repository).toHaveBeenCalledWith(payload);
     expect(resolved).toHaveBeenCalledTimes(1);
@@ -113,8 +156,16 @@ describe('createStore', () => {
       { [blokoName]: payload },
       initialBlokoState
     );
-    expect(contextMock.commit).toHaveBeenCalledTimes(1);
-    expect(contextMock.commit).toHaveBeenCalledWith({ [blokoName]: payload });
+
+    const startLoading = contextMock.commit.mock.calls[0][0];
+    const resolvedCommit = contextMock.commit.mock.calls[1][0];
+    const endLoading = contextMock.commit.mock.calls[2][0];
+
+    expect(startLoading).toEqual({
+      [actionName]: { loading: payload, error: '' },
+    });
+    expect(resolvedCommit).toEqual({ [blokoName]: payload });
+    expect(endLoading).toEqual({ [actionName]: { loading: false, error: '' } });
 
     contextMock.commit.mockClear();
 
@@ -128,6 +179,7 @@ describe('createStore', () => {
         ...blokoDescriptor,
         ...setterPayload,
       },
+      [actionName]: { loading: false, error: '' },
     };
 
     expect(globalState.getState()[storeKey]).toEqual(expectedBlokoState);
@@ -157,6 +209,64 @@ describe('createStore', () => {
       [blokoName]: {
         foo: _setterPayload.foo + '!',
       },
+    });
+  });
+
+  it('should handle rejected actions', async () => {
+    const storeKey = 'key';
+    const actionName = 'myAction';
+    const payload = { foo: 'bar' };
+    const errorMessage = 'errorMessage';
+    const repository = jest.fn(() => Promise.reject(new Error(errorMessage)));
+    const resolved = jest.fn(data => data);
+    const commit = jest.fn(data => {
+      const currentState = globalState.getState();
+      const nextState = { ...currentState[storeKey], ...data };
+
+      globalState.setState(storeKey, nextState);
+    });
+    let contextMock = { commit, getState: globalState.getState };
+
+    globalState.setState(storeKey, {
+      [actionName]: { loading: false, error: '' },
+    });
+
+    const Store = createStore({
+      key: storeKey,
+      state: {},
+      actions: {
+        [actionName]: {
+          repository,
+          resolved,
+        },
+      },
+    });
+
+    const action = Store.actions[actionName];
+
+    await action(contextMock, payload);
+
+    const nextBlokoState = globalState.getState()[storeKey];
+
+    expect(nextBlokoState).toEqual({
+      [actionName]: { loading: false, error: errorMessage },
+    });
+    expect(repository).toHaveBeenCalledTimes(1);
+    expect(repository).toHaveBeenCalledWith(payload);
+    expect(resolved).toHaveBeenCalledTimes(0);
+
+    const startLoading = contextMock.commit.mock.calls[0][0];
+    const rejectedCommit = contextMock.commit.mock.calls[1][0];
+    const endLoading = contextMock.commit.mock.calls[2][0];
+
+    expect(startLoading).toEqual({
+      [actionName]: { loading: true, error: '' },
+    });
+    expect(rejectedCommit).toEqual({
+      [actionName]: { loading: true, error: errorMessage },
+    });
+    expect(endLoading).toEqual({
+      [actionName]: { loading: false, error: errorMessage },
     });
   });
 });

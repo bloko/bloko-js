@@ -1,5 +1,11 @@
+import createUnit from './createUnit';
 import isFunction from './utils/isFunction';
 import isObject from './utils/isObject';
+
+const requestBloko = createUnit({
+  loading: false,
+  error: '',
+});
 
 function createStore(descriptor) {
   const { key, state, actions } = descriptor;
@@ -38,17 +44,45 @@ function createStore(descriptor) {
   });
 
   Object.keys(actions).forEach(name => {
-    const { repository, resolved } = actions[name];
+    const { repository, resolved, loading } = actions[name];
+
+    let _loading = isFunction(loading) ? loading : () => true;
+
+    _state[name] = requestBloko();
 
     _actions[name] = async function execute(context, payload) {
       const state = context.getState()[key];
 
-      const data = await repository(payload);
-      const nextState = await resolved(data, state);
+      try {
+        const loadingState = await _loading(payload, state);
 
-      /* istanbul ignore else */
-      if (nextState) {
-        context.commit(nextState);
+        context.commit({ [name]: { loading: loadingState, error: '' } });
+
+        const data = await repository(payload);
+        const nextState = await resolved(data, state);
+
+        /* istanbul ignore else */
+        if (nextState) {
+          context.commit(nextState);
+        }
+      } catch (error) {
+        const currentRequestState = context.getState()[key][name];
+
+        context.commit({
+          [name]: {
+            ...currentRequestState,
+            error: error.message,
+          },
+        });
+      } finally {
+        const currentRequestState = context.getState()[key][name];
+
+        context.commit({
+          [name]: {
+            ...currentRequestState,
+            loading: false,
+          },
+        });
       }
     };
   });
