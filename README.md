@@ -10,7 +10,6 @@
   </a>
 </p>
 
-
 [![Travis build][travis-image]][travis-url]
 [![Codecov coverage][codecov-image]][codecov-url]
 [![NPM version][npm-image]][npm-url]
@@ -24,8 +23,8 @@
 
 ## Packages
 
-* 🧱`@bloko/js` - Core library and utilities to handle Blokos
-* [⚛️`@bloko/react`](https://github.com/bloko/bloko-react) - React hooks and utilities for using Bloko in React applications
+- 🧱`@bloko/js` - Core library and utilities to handle Blokos
+- [⚛️`@bloko/react`](https://github.com/bloko/bloko-react) - React hooks and utilities for using Bloko in React applications
 
 Bloko is currently under heavy development, but can be installed by running:
 
@@ -70,7 +69,7 @@ const User = Bloko.create({
     }
 
     return this.name + ' ' + this.surname;
-  }
+  },
 });
 
 User();
@@ -179,29 +178,42 @@ const Auth = Bloko.createStore({
   },
   actions: {
     signIn: {
+      // Use loading function when it is
+      // necessary to return something
+      // different than true
+      loading(payload) {
+        return payload.email;
+      },
       repository(payload) {
         return http.post('/auth/sign-in', {
           email: payload.email,
           password: payload.password,
         });
       },
-      resolved(data) {
+      resolved(data, state) {
         return {
           session: {
+            ...state.session,
             token: data.token,
           },
         };
       },
-    }
-  }
+    },
+  },
 });
 ```
 
-`Auth` will store all its actions and current state on application's global state and could be accessed by its key `auth`.
+`Auth` will store all its actions and current state on application's global state and could be accessed by its key `auth`. Besides `Auth` session state, a special state named `signIn` will automatically be created because `Auth` has an action with this name. `signIn` state will follow an object with shape `{ loading, error }` so on every `signIn` action call could be possible to track loading states and error feedback.
 
 Blokos Store needs a context to work and specific bloko libraries like [`bloko-react`](https://github.com/bloko/bloko-react) will give it using [`Bloko.Provider`](https://github.com/bloko/bloko-react#bloko-provider).
 
-When you call `signIn` with its necessary payload `repository` handler will be called. The example above will fire a http request simulating an authentication flow. When it is finished and has a green response, `resolved` handler will be called and must return a full or partial state to update its current Bloko Store state. Given the example, session will be updated with a new token in `data.token`.
+When you call `signIn` with its necessary payload `loading` will be called and its changes loading request state and reset any errors to empty string. Using `loading` function it could be possible to return something different than true.
+
+Next `repository` handler will be called. The example above will fire a http request simulating an authentication flow.
+
+When it is finished and has a green response, `resolved` handler will be called and it is responsible to return the next state based on resolved data passed as first parameter. Given the example, session will be updated with a new token in `data.token`.
+
+When `repository` rejects something a internal catch handles the error and updates `signIn.error` state with `error.message` string.
 
 ## Why?
 
