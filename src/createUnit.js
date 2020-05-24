@@ -33,6 +33,7 @@ function createUnit(descriptor) {
 
   function create(payload) {
     let result = {};
+    let state = {};
 
     Object.keys(create.__props__).forEach(key => {
       const { handler, rules } = create.__props__[key];
@@ -50,15 +51,11 @@ function createUnit(descriptor) {
         create.__props__ = tmpProps;
         create.__derivated__ = tmpDerivated;
       } else {
-        let _value = value || handler;
+        const initialValue = evaluate(value, handler);
 
-        if (isFunction(handler)) {
-          _value = handler(value);
-        }
-
-        if (payload && payload.hasOwnProperty(key)) {
+        if (payload && Object.prototype.hasOwnProperty.call(payload, key)) {
           rules.forEach(rule => {
-            const errorMessage = rule(_value);
+            const errorMessage = rule(initialValue);
 
             if (typeof errorMessage === 'string') {
               throw new Error(errorMessage);
@@ -66,14 +63,31 @@ function createUnit(descriptor) {
           });
         }
 
-        result[key] = _value;
+        state[key] = initialValue;
+
+        Object.defineProperty(result, key, {
+          get() {
+            return state[key];
+          },
+          set(value) {
+            state[key] = evaluate(value, handler);
+          },
+          enumerable: true,
+          configurable: false,
+        });
       }
     });
 
-    Object.keys(create.__derivated__).forEach(key => {
-      const handler = create.__derivated__[key];
+    const derivated = Object.assign({}, create.__derivated__);
 
-      result[key] = handler.call(result);
+    Object.keys(derivated).forEach(key => {
+      Object.defineProperty(result, key, {
+        get() {
+          return derivated[key].call(state);
+        },
+        enumerable: true,
+        configurable: false,
+      });
     });
 
     return result;
@@ -90,6 +104,16 @@ function createUnit(descriptor) {
   }
 
   return create;
+}
+
+function evaluate(value, handler) {
+  let _value = value || handler;
+
+  if (isFunction(handler)) {
+    _value = handler(value);
+  }
+
+  return _value;
 }
 
 function normalizeDescriptor(descriptor) {

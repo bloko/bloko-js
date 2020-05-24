@@ -130,8 +130,13 @@ describe('createUnit', () => {
       },
     });
 
-    expect(Bloko()).toEqual({ name: '' });
-    expect(Bloko({ name: 'name' })).toEqual({ name: 'Name' });
+    const bloko = Bloko();
+
+    expect(bloko).toEqual({ name: '' });
+
+    bloko.name = 'name';
+
+    expect(bloko).toEqual({ name: 'Name' });
     expect(() => Bloko({ name: '' })).toThrowError(requiredMessage);
     expect(() => Bloko({ name: 'n' })).toThrowError(smallMessage);
   });
@@ -216,6 +221,9 @@ describe('createUnit', () => {
 
     const ChildThree = createUnit({
       name: 'child3',
+      derivated() {
+        return this.name;
+      },
       childTwo: ChildTwo.Array,
     });
 
@@ -232,6 +240,7 @@ describe('createUnit', () => {
       },
       childThree: {
         name: 'child3',
+        derivated: 'child3',
         childTwo: [],
       },
     });
@@ -243,6 +252,7 @@ describe('createUnit', () => {
       },
       childThree: {
         name: 'child3',
+        derivated: 'child3',
         childTwo: [
           {
             name: 'test',
