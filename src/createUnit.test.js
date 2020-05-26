@@ -130,13 +130,8 @@ describe('createUnit', () => {
       },
     });
 
-    const bloko = Bloko();
-
-    expect(bloko).toEqual({ name: '' });
-
-    bloko.name = 'name';
-
-    expect(bloko).toEqual({ name: 'Name' });
+    expect(Bloko()).toEqual({ name: '' });
+    expect(Bloko({ name: 'name' })).toEqual({ name: 'Name' });
     expect(() => Bloko({ name: '' })).toThrowError(requiredMessage);
     expect(() => Bloko({ name: 'n' })).toThrowError(smallMessage);
   });
