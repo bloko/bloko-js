@@ -185,7 +185,7 @@ describe('createUnit', () => {
     expect(Bloko.Array.validate(bloko)).toEqual(false);
   });
 
-  it('should get rules swith Bloko.rules', () => {
+  it('should get rules with Bloko.rules', () => {
     const isRequiredRule = v => !!v || 'Name is required';
 
     const Bloko = createUnit({
@@ -205,6 +205,43 @@ describe('createUnit', () => {
       name: [isRequiredRule],
       child: {
         childName: [isRequiredRule],
+      },
+    });
+  });
+
+  it('should get initial state with Bloko.state', () => {
+    const Bloko = createUnit({
+      simpleProp: 'simpleProp',
+      propWithRule: {
+        value: 'propWithRule',
+        rules: [],
+      },
+      derivatedProp() {
+        return 'derivatedProp';
+      },
+      propWithErrorTransform: {
+        value() {
+          throw new Error('transform error');
+        },
+      },
+      propWithNoDefault: {
+        rules: [],
+      },
+      childProp: createUnit({
+        childName: {
+          value: 'childName',
+          rules: [],
+        },
+      }),
+    });
+
+    expect(Bloko.state).toEqual({
+      simpleProp: 'simpleProp',
+      propWithRule: 'propWithRule',
+      propWithErrorTransform: undefined,
+      propWithNoDefault: undefined,
+      childProp: {
+        childName: 'childName',
       },
     });
   });

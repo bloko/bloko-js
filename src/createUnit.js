@@ -7,6 +7,7 @@ function createUnit(descriptor) {
   create.__props__ = props;
   create.__derivated__ = derivated;
   create.rules = getRules(descriptor);
+  create.state = getInitialObject(props);
 
   array.__props__ = create.__props__;
   array.__derivated__ = create.__derivated__;
@@ -162,6 +163,28 @@ function getRules(descriptor) {
     if (isBloko(data)) {
       acc[key] = getRules(data.__props__);
     }
+
+    return acc;
+  }, {});
+}
+
+function getInitialObject(props) {
+  return Object.keys(props).reduce((acc, key) => {
+    const { handler } = props[key];
+
+    let value = handler;
+
+    if (isBloko(handler)) {
+      value = getInitialObject(handler.__props__);
+    } else if (isFunction(handler)) {
+      try {
+        value = handler();
+      } catch (error) {
+        value = undefined;
+      }
+    }
+
+    acc[key] = value;
 
     return acc;
   }, {});
