@@ -124,6 +124,36 @@ User.validate({ name: '' });
 // => false
 User.validate({ name: 'John', surname: 'S.' });
 // => true
+
+// You could get rules array of each prop and apply wherever you need
+User.rules();
+// => { name: [isRequiredRule, isSmallRule], surname: [isRequiredRule] }
+```
+
+### Initial State
+
+Blokos Unit can return initial state from default values.
+
+```js
+import Bloko from '@bloko/js';
+
+const User = Bloko.create({
+  name: '',
+  surname: {
+    value: '',
+    rules: [],
+  },
+  noDefault: {
+    rules: [],
+  },
+  derivated() {
+    return '';
+  },
+});
+
+// Note that state() won't return derivated props
+User.state();
+// => { name: '',  surname: '', noDefault: undefined }
 ```
 
 ### Composition between Blokos Unit
@@ -188,7 +218,8 @@ const Auth = Bloko.createStore({
         return payload.email;
       },
       request(payload) {
-        return http.post('/auth/sign-in', {
+        // Using axios to exmplify, but could be any provider
+        return axios.post('/auth/sign-in', {
           email: payload.email,
           password: payload.password,
         });
