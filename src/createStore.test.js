@@ -32,7 +32,7 @@ describe('createStore', () => {
       state: {
         [blokoName]: {
           type: Bloko,
-          setter: false,
+          setters: false,
         },
       },
       actions: {},
@@ -53,7 +53,7 @@ describe('createStore', () => {
       state: {
         [blokoName]: {
           type: Bloko,
-          setter: true,
+          setters: true,
         },
       },
       actions: {},
@@ -62,6 +62,7 @@ describe('createStore', () => {
     expect(Store.state).toEqual({ [blokoName]: blokoDescriptor });
     expect(Store.actions).toEqual({
       [`set${capitalizedBlokoName}`]: expect.any(Function),
+      [`reset${capitalizedBlokoName}`]: expect.any(Function),
     });
   });
 
@@ -76,10 +77,7 @@ describe('createStore', () => {
         [blokoName]: Bloko,
       },
       actions: {
-        [actionName]: {
-          repository: jest.fn(),
-          resolved: jest.fn(),
-        },
+        [actionName]: {},
       },
     });
 
@@ -102,7 +100,7 @@ describe('createStore', () => {
       blokoName.charAt(0).toUpperCase() + blokoName.slice(1);
     const actionName = 'myAction';
     const payload = { foo: 'bar' };
-    const repository = jest.fn(() => ({ [blokoName]: payload }));
+    const request = jest.fn(() => ({ [blokoName]: payload }));
     const loading = jest.fn(data => data);
     const resolved = jest.fn(data => data);
     const commit = jest.fn(data => {
@@ -123,13 +121,13 @@ describe('createStore', () => {
       state: {
         [blokoName]: {
           type: Bloko,
-          setter: true,
+          setters: true,
         },
       },
       actions: {
         [actionName]: {
           loading,
-          repository,
+          request,
           resolved,
         },
       },
@@ -149,8 +147,8 @@ describe('createStore', () => {
     });
     expect(loading).toHaveBeenCalledTimes(1);
     expect(loading).toHaveBeenCalledWith(payload, initialBlokoState);
-    expect(repository).toHaveBeenCalledTimes(1);
-    expect(repository).toHaveBeenCalledWith(payload);
+    expect(request).toHaveBeenCalledTimes(1);
+    expect(request).toHaveBeenCalledWith(payload);
     expect(resolved).toHaveBeenCalledTimes(1);
     expect(resolved).toHaveBeenCalledWith(
       { [blokoName]: payload },
@@ -217,7 +215,7 @@ describe('createStore', () => {
     const actionName = 'myAction';
     const payload = { foo: 'bar' };
     const errorMessage = 'errorMessage';
-    const repository = jest.fn(() => Promise.reject(new Error(errorMessage)));
+    const request = jest.fn(() => Promise.reject(new Error(errorMessage)));
     const resolved = jest.fn(data => data);
     const commit = jest.fn(data => {
       const currentState = globalState.getState();
@@ -236,7 +234,7 @@ describe('createStore', () => {
       state: {},
       actions: {
         [actionName]: {
-          repository,
+          request,
           resolved,
         },
       },
@@ -251,8 +249,8 @@ describe('createStore', () => {
     expect(nextBlokoState).toEqual({
       [actionName]: { loading: false, error: errorMessage },
     });
-    expect(repository).toHaveBeenCalledTimes(1);
-    expect(repository).toHaveBeenCalledWith(payload);
+    expect(request).toHaveBeenCalledTimes(1);
+    expect(request).toHaveBeenCalledWith(payload);
     expect(resolved).toHaveBeenCalledTimes(0);
 
     const startLoading = contextMock.commit.mock.calls[0][0];

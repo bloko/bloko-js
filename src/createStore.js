@@ -19,9 +19,11 @@ function createStore(descriptor) {
     if (!isObject(state[name])) {
       bloko = state[name];
     } else {
-      const { type, setter } = state[name];
+      const { type, setters } = state[name];
 
-      if (setter) {
+      bloko = type;
+
+      if (setters) {
         const capitalizedName = name.charAt(0).toUpperCase() + name.slice(1);
 
         _actions[`set${capitalizedName}`] = function execute(context, payload) {
@@ -35,16 +37,18 @@ function createStore(descriptor) {
 
           context.commit({ [name]: _payload });
         };
-      }
 
-      bloko = type;
+        _actions[`reset${capitalizedName}`] = function execute(context) {
+          context.commit({ [name]: bloko() });
+        };
+      }
     }
 
     _state[name] = bloko();
   });
 
   Object.keys(actions).forEach(name => {
-    const { repository, resolved, loading } = actions[name];
+    const { request, resolved, loading } = actions[name];
 
     let _loading = isFunction(loading) ? loading : () => true;
 
@@ -58,7 +62,7 @@ function createStore(descriptor) {
 
         context.commit({ [name]: { loading: loadingState, error: '' } });
 
-        const data = await repository(payload);
+        const data = await request(payload);
         const nextState = await resolved(data, state);
 
         /* istanbul ignore else */
