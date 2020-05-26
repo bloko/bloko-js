@@ -201,7 +201,7 @@ describe('createUnit', () => {
       }),
     });
 
-    expect(Bloko.rules).toEqual({
+    expect(Bloko.rules()).toEqual({
       name: [isRequiredRule],
       child: {
         childName: [isRequiredRule],
