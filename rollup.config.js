@@ -14,10 +14,10 @@ export default [
       exports: 'named',
     },
     plugins: [
+      replace({ 'process.env.NODE_ENV': JSON.stringify('development') }),
       resolve(),
       babel(),
       commonjs(),
-      replace({ 'process.env.NODE_ENV': JSON.stringify('development') }),
       sizeSnapshot(),
     ],
   },
@@ -30,10 +30,10 @@ export default [
       indent: false,
     },
     plugins: [
+      replace({ 'process.env.NODE_ENV': JSON.stringify('production') }),
       resolve(),
       babel(),
       commonjs(),
-      replace({ 'process.env.NODE_ENV': JSON.stringify('production') }),
       terser(),
       sizeSnapshot(),
     ],
