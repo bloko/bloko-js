@@ -93,6 +93,52 @@ describe('createStore', () => {
     });
   });
 
+  it('should reset state with reset setter', () => {
+    const storeKey = 'key';
+    const blokoName = 'bloko';
+    const capitalizedBlokoName =
+      blokoName.charAt(0).toUpperCase() + blokoName.slice(1);
+    const commit = jest.fn(data => {
+      const currentState = globalState.getState();
+      const nextState = { ...currentState[storeKey], ...data };
+
+      globalState.setState(storeKey, nextState);
+    });
+    let contextMock = { commit, getState: globalState.getState };
+
+    globalState.setState(storeKey, {
+      [blokoName]: blokoDescriptor,
+    });
+
+    const Store = createStore({
+      key: storeKey,
+      state: {
+        [blokoName]: {
+          type: Bloko,
+          setters: true,
+        },
+      },
+      actions: {},
+    });
+
+    const payload = { foo: 'bar' };
+
+    const setterAction = Store.actions[`set${capitalizedBlokoName}`];
+    const resetAction = Store.actions[`reset${capitalizedBlokoName}`];
+
+    const getBlokoState = () => globalState.getState()[storeKey][blokoName];
+
+    expect(getBlokoState()).toEqual(blokoDescriptor);
+
+    setterAction(contextMock, payload);
+
+    expect(getBlokoState()).toEqual(payload);
+
+    resetAction(contextMock);
+
+    expect(getBlokoState()).toEqual(blokoDescriptor);
+  });
+
   it('should handle actions correctly', async () => {
     const storeKey = 'key';
     const blokoName = 'bloko';
