@@ -1,6 +1,5 @@
 import createStore from './createStore';
 import createUnit from './createUnit';
-import http from './http';
 import * as globalState from './utils/globalState';
 
 export default {
@@ -8,4 +7,4 @@ export default {
   createStore,
 };
 
-export { http, globalState };
+export { globalState };
