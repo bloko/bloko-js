@@ -235,7 +235,7 @@ describe('createUnit', () => {
       }),
     });
 
-    expect(Bloko.state).toEqual({
+    expect(Bloko.state()).toEqual({
       simpleProp: 'simpleProp',
       propWithRule: 'propWithRule',
       propWithErrorTransform: undefined,

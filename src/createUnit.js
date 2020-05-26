@@ -7,7 +7,6 @@ function createUnit(descriptor) {
   create.__props__ = props;
   create.__derivated__ = derivated;
   create.rules = getRules(descriptor);
-  create.state = getInitialObject(props);
 
   array.__props__ = create.__props__;
   array.__derivated__ = create.__derivated__;
@@ -16,12 +15,17 @@ function createUnit(descriptor) {
   create.Array = array;
   create.Array.validate = validateArray;
 
+  create.state = state;
   create.validate = validate;
 
   function validateArray(payload) {
     const _payload = Array.isArray(payload) ? payload : [payload];
 
     return _payload.map(validate).filter(v => v).length > 0;
+  }
+
+  function state() {
+    return getInitialObject(props);
   }
 
   function validate(payload) {
