@@ -1,6 +1,7 @@
 import createUnit from './createUnit';
 import isFunction from './utils/isFunction';
 import isObject from './utils/isObject';
+import merge from './utils/merge';
 
 const requestBloko = createUnit({
   loading: undefined,
@@ -27,15 +28,18 @@ function createStore(descriptor) {
         const capitalizedName = name.charAt(0).toUpperCase() + name.slice(1);
 
         _actions[`set${capitalizedName}`] = function execute(context, payload) {
-          let _payload = payload;
+          let nextState = null;
 
-          if (isFunction(payload)) {
+          if (payload) {
             const state = context.getState()[key][name];
+            const _payload = evaluate(payload, state);
 
-            _payload = payload(state);
+            nextState = Object.assign({}, state || bloko());
+
+            merge(nextState, _payload);
           }
 
-          context.commit({ [name]: _payload });
+          context.commit({ [name]: nextState });
         };
       }
     }
@@ -92,6 +96,14 @@ function createStore(descriptor) {
     state: _state,
     actions: _actions,
   };
+}
+
+function evaluate(value, state) {
+  if (isFunction(value)) {
+    return value(state);
+  }
+
+  return value;
 }
 
 export default createStore;

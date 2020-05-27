@@ -266,4 +266,121 @@ describe('createStore', () => {
       [actionName]: { loading: false, error: errorMessage },
     });
   });
+
+  it('should handle action setters correctly', async () => {
+    const storeKey = 'key';
+    const blokoName = 'bloko';
+    const capitalizedBlokoName =
+      blokoName.charAt(0).toUpperCase() + blokoName.slice(1);
+    const payload = { foo: 'bar' };
+    const commit = jest.fn(data => {
+      const currentState = globalState.getState();
+      const nextState = { ...currentState[storeKey], ...data };
+
+      globalState.setState(storeKey, nextState);
+    });
+    let contextMock = { commit, getState: globalState.getState };
+
+    globalState.setState(storeKey, {
+      [blokoName]: blokoDescriptor,
+    });
+
+    const BlokoTwoLevels = createUnit({
+      foo: '',
+      bloko: Bloko,
+    });
+
+    const Store = createStore({
+      key: storeKey,
+      state: {
+        [blokoName]: {
+          type: BlokoTwoLevels,
+          setter: true,
+        },
+      },
+      actions: {},
+    });
+
+    const setterAction = Store.actions[`set${capitalizedBlokoName}`];
+
+    setterAction(contextMock, null);
+
+    let expectedBlokoState = {
+      [blokoName]: null,
+    };
+
+    expect(globalState.getState()[storeKey]).toEqual(expectedBlokoState);
+    expect(contextMock.commit).toHaveBeenCalledTimes(1);
+    expect(contextMock.commit).toHaveBeenCalledWith({
+      [blokoName]: null,
+    });
+
+    contextMock.commit.mockClear();
+
+    setterAction(contextMock, payload);
+
+    expectedBlokoState = {
+      [blokoName]: {
+        ...blokoDescriptor,
+        ...payload,
+        bloko: blokoDescriptor,
+      },
+    };
+
+    expect(globalState.getState()[storeKey]).toEqual(expectedBlokoState);
+    expect(contextMock.commit).toHaveBeenCalledTimes(1);
+    expect(contextMock.commit).toHaveBeenCalledWith({
+      [blokoName]: {
+        ...payload,
+        bloko: blokoDescriptor,
+      },
+    });
+
+    contextMock.commit.mockClear();
+
+    const setterPayloadFn = state => ({ foo: state.foo + '!' });
+
+    setterAction(contextMock, setterPayloadFn);
+
+    expect(globalState.getState()[storeKey]).toEqual({
+      [blokoName]: {
+        ...blokoDescriptor,
+        foo: payload.foo + '!',
+        bloko: blokoDescriptor,
+      },
+    });
+    expect(contextMock.commit).toHaveBeenCalledTimes(1);
+    expect(contextMock.commit).toHaveBeenCalledWith({
+      [blokoName]: {
+        foo: payload.foo + '!',
+        bloko: blokoDescriptor,
+      },
+    });
+
+    contextMock.commit.mockClear();
+
+    const payloadTwoLevels = { foo: 'name', bloko: { foo: 'name' } };
+
+    setterAction(contextMock, payloadTwoLevels);
+
+    expect(globalState.getState()[storeKey]).toEqual({
+      [blokoName]: {
+        ...blokoDescriptor,
+        foo: payloadTwoLevels.foo,
+        bloko: {
+          ...blokoDescriptor,
+          foo: payloadTwoLevels.bloko.foo,
+        },
+      },
+    });
+    expect(contextMock.commit).toHaveBeenCalledTimes(1);
+    expect(contextMock.commit).toHaveBeenCalledWith({
+      [blokoName]: {
+        foo: payloadTwoLevels.foo,
+        bloko: {
+          foo: payloadTwoLevels.bloko.foo,
+        },
+      },
+    });
+  });
 });
