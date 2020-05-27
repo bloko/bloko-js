@@ -23,7 +23,7 @@ describe('createStore', () => {
     expect(Store.state).toEqual({ bloko: blokoDescriptor });
   });
 
-  it('should not initialize setters when bloko.setter are not true', () => {
+  it('should not initialize setter when bloko.setter are not true', () => {
     const storeKey = 'key';
     const blokoName = 'bloko';
 
@@ -32,7 +32,7 @@ describe('createStore', () => {
       state: {
         [blokoName]: {
           type: Bloko,
-          setters: false,
+          setter: false,
         },
       },
       actions: {},
@@ -42,7 +42,7 @@ describe('createStore', () => {
     expect(Store.actions).toEqual({});
   });
 
-  it('should initialize unit blokos inside state with setters', () => {
+  it('should initialize unit blokos inside state with setter', () => {
     const storeKey = 'key';
     const blokoName = 'bloko';
     const capitalizedBlokoName =
@@ -53,7 +53,7 @@ describe('createStore', () => {
       state: {
         [blokoName]: {
           type: Bloko,
-          setters: true,
+          setter: true,
         },
       },
       actions: {},
@@ -120,7 +120,7 @@ describe('createStore', () => {
       state: {
         [blokoName]: {
           type: Bloko,
-          setters: true,
+          setter: true,
         },
       },
       actions: {

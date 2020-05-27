@@ -19,11 +19,11 @@ function createStore(descriptor) {
     if (!isObject(state[name])) {
       bloko = state[name];
     } else {
-      const { type, setters } = state[name];
+      const { type, setter } = state[name];
 
       bloko = type;
 
-      if (setters) {
+      if (setter) {
         const capitalizedName = name.charAt(0).toUpperCase() + name.slice(1);
 
         _actions[`set${capitalizedName}`] = function execute(context, payload) {
