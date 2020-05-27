@@ -206,7 +206,7 @@ const Auth = Bloko.createStore({
   state: {
     session: {
       type: Session,
-      setters: true,
+      setter: true,
     },
   },
   actions: {
@@ -248,8 +248,6 @@ Next `repository` handler will be called. The example above will fire a http req
 When it is finished and has a green response, `resolved` handler will be called and it is responsible to return the next state based on resolved data passed as first parameter. Given the example, session will be updated with a new token in `data.token`.
 
 When `repository` rejects something a internal catch handles the error and updates `signIn.error` state with `error.message` string.
-
-Special actions are created automatically when are using `setters: true`. Actions follow a prefix `set` or `reset` like `actions.setSession` and `actions.resetSession` and they are responsible to manipulate `session` state for needed cases.
 
 ## Why?
 
