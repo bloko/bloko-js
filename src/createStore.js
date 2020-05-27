@@ -3,7 +3,7 @@ import isFunction from './utils/isFunction';
 import isObject from './utils/isObject';
 
 const requestBloko = createUnit({
-  loading: false,
+  loading: undefined,
   error: '',
 });
 

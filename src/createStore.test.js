@@ -84,7 +84,7 @@ describe('createStore', () => {
     expect(Store.state).toEqual({
       [blokoName]: blokoDescriptor,
       [actionName]: {
-        loading: false,
+        loading: undefined,
         error: '',
       },
     });
