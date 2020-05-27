@@ -37,10 +37,6 @@ function createStore(descriptor) {
 
           context.commit({ [name]: _payload });
         };
-
-        _actions[`reset${capitalizedName}`] = function execute(context) {
-          context.commit({ [name]: bloko() });
-        };
       }
     }
 
