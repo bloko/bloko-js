@@ -9,7 +9,7 @@ function merge(obj, payload) {
     const value = payload[key];
 
     if (isObject(value)) {
-      merge(value, obj[key]);
+      merge(obj[key], value);
     } else {
       obj[key] = value;
     }
