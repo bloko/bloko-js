@@ -17,10 +17,10 @@ describe('createStore', () => {
       state: {
         bloko: Bloko,
       },
-      actions: {},
     });
 
     expect(Store.state).toEqual({ bloko: blokoDescriptor });
+    expect(Store.actions).toEqual({});
   });
 
   it('should not initialize setter when bloko.setter are not true', () => {
@@ -63,6 +63,26 @@ describe('createStore', () => {
     expect(Store.actions).toEqual({
       [`set${capitalizedBlokoName}`]: expect.any(Function),
     });
+  });
+
+  it('should initialize unit blokos as array inside state with array = true', () => {
+    const storeKey = 'key';
+    const blokoName = 'bloko';
+    const emptyArray = [];
+
+    const Store = createStore({
+      key: storeKey,
+      state: {
+        [blokoName]: {
+          type: Bloko,
+          array: true,
+        },
+      },
+      actions: {},
+    });
+
+    expect(Store.state).toEqual({ [blokoName]: emptyArray });
+    expect(Store.actions).toEqual({});
   });
 
   it('should initialize state with request state when has any action', () => {

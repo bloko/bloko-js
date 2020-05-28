@@ -9,7 +9,7 @@ const requestBloko = createUnit({
 });
 
 function createStore(descriptor) {
-  const { key, state, actions } = descriptor;
+  const { key, state, actions = {} } = descriptor;
 
   let _state = {};
   let _actions = {};
@@ -20,9 +20,9 @@ function createStore(descriptor) {
     if (!isObject(state[name])) {
       bloko = state[name];
     } else {
-      const { type, setter } = state[name];
+      const { type, setter, array } = state[name];
 
-      bloko = type;
+      bloko = array ? emptyArray : type;
 
       if (setter) {
         const capitalizedName = name.charAt(0).toUpperCase() + name.slice(1);
@@ -104,6 +104,10 @@ function evaluate(value, state) {
   }
 
   return value;
+}
+
+function emptyArray() {
+  return [];
 }
 
 export default createStore;
